@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+# sourcery skip: use-fstring-for-formatting
 from models.base_model import BaseModel
 
 my_model = BaseModel()

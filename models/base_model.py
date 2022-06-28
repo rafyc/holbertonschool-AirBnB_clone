@@ -6,6 +6,7 @@ BaseModel class that defines all common attributes/methods for other classes.
 
 from uuid import uuid4
 from datetime import datetime
+import models
 
 
 class BaseModel:
@@ -14,6 +15,11 @@ class BaseModel:
     """
 
     def __init__(self, *args, **kwargs):
+        """
+        Function that initialize the instance of BaseModel
+        """
+        self.updated_at = datetime.now()
+
         if len(kwargs) != 0:
             for keys, values in kwargs.items():
                 if keys in ['created_at', 'updated_at']:
@@ -23,6 +29,7 @@ class BaseModel:
         else:
             self.id = str(uuid4())
             self.created_at = datetime.now()
+            models.storage.new(self)
 
     def __str__(self):
         """
@@ -36,12 +43,13 @@ class BaseModel:
         the current datetime
         """
         self.updated_at = datetime.now()
+        models.storage.save()
 
     def to_dict(self):
-        """returns a dictionary containing all keys/values of __dict__
+        """
+        returns a dictionary containing all keys/values of __dict__
         of the instance
         """
-
         instance_dict = {"__class__": self.__class__.__name__}
         for keys, values in self.__dict__.items():
             if keys in ['created_at', 'updated_at']:
