@@ -5,8 +5,14 @@ The entry point of the command interpreter.
 
 from models import storage
 import cmd
-from models.engine.file_storage import FileStorage
 from models.base_model import BaseModel
+from models.engine.file_storage import FileStorage
+from models.amenity import Amenity
+from models.city import City
+from models.place import Place
+from models.review import Review
+from models.state import State
+from models.user import User
 
 
 class HBNBCommand(cmd.Cmd):
@@ -17,7 +23,8 @@ class HBNBCommand(cmd.Cmd):
         Cmd : built in class
     """
     prompt = '(hbnb) '
-    list_class = ["BaseModel"]
+    list_class = ["BaseModel", "User", "City",
+                  "Amenity", "Place", "State", "Review"]
 
     def do_quit(self, arg):
         """Quit command to exit the program
