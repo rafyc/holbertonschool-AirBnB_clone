@@ -1,10 +1,12 @@
 #!/usr/bin/python3
-
 """
 The entry point of the command interpreter.
 """
 
+from models import storage
 import cmd
+from models.engine.file_storage import FileStorage
+from models.base_model import BaseModel
 
 
 class HBNBCommand(cmd.Cmd):
@@ -15,6 +17,7 @@ class HBNBCommand(cmd.Cmd):
         Cmd : built in class
     """
     prompt = '(hbnb) '
+    list_class = ["BaseModel"]
 
     def do_quit(self, arg):
         """Quit command to exit the program
@@ -26,11 +29,136 @@ class HBNBCommand(cmd.Cmd):
         """
         quit()
 
-    def empty_line(self):
+    def emptyline(self):
         """Handles the emptyline"""
         pass
 
-    # ----- basic hbnb commands -----
+    def do_create(self, arg):
+        """Creates a new instance
+        """
+        if len(arg) == 0:
+            print("** class name missing **")
+
+        elif arg not in HBNBCommand.list_class:
+            print("** class doesn't exist **")
+
+        else:
+            new_instance = eval(arg)()
+            new_instance.save()
+            print(new_instance.id)
+
+    def do_show(self, arg):
+        """Prints the string representation of an instance based
+        on the class name and id.
+        """
+        list_arg = arg.split(" ")
+
+        if len(arg) == 0:
+            print("** class name missing ** ")
+            return
+
+        elif list_arg[0] not in HBNBCommand.list_class:
+            print("** class doesn't exist **")
+            return
+
+        elif len(list_arg) < 2:
+            print("** instance id missing **")
+            return
+
+        else:
+            dict_all_obj = storage.all()
+            string = f'{list_arg[0]}.{list_arg[1]}'
+
+            if string not in dict_all_obj.keys():
+                print("** no instance found **")
+
+            else:
+                print(dict_all_obj[string])
+
+    def do_destroy(self, arg):
+        """Deletes an instance based on the class name and id and save
+        into the JSON file)
+        """
+        list_arg = arg.split(" ")
+
+        if len(arg) == 0:
+            print("** class name missing ** ")
+            return
+
+        elif list_arg[0] not in HBNBCommand.list_class:
+            print("** class doesn't exist **")
+            return
+
+        elif len(list_arg) < 2:
+            print("** instance id missing **")
+            return
+
+        else:
+            dict_all_obj = storage.all()
+            string = f'{list_arg[0]}.{list_arg[1]}'
+
+            if string not in dict_all_obj.keys():
+                print("** no instance found **")
+
+            else:
+                del(dict_all_obj[string])
+                storage.save()
+
+    def do_all(self, arg):  # sourcery skip: for-append-to-extend
+        """Prints all string representation of all instances
+        based or not on the class name
+        """
+        dict_all_obj = storage.all()
+        list_obj = []
+
+        if len(arg) == 0:
+            for key, vals in dict_all_obj.items():
+                list_obj.append(str(vals))
+            print(list_obj)
+
+        elif arg in HBNBCommand.list_class:
+            for keys, vals in dict_all_obj.items():
+                if vals.__class__.__name__ == arg:
+                    list_obj.append(str(vals))
+            print(list_obj)
+        else:
+            print("** class doesn't exist **")
+
+    def do_update(self, arg):
+        """Updates an instance based on the class name and id by adding
+        or updating attribute
+        """
+        list_arg = arg.split(" ")
+
+        if len(arg) == 0:
+            print("** class name missing **")
+
+        elif list_arg[0] not in HBNBCommand.list_class:
+            print("** class doesn't exist **")
+            return
+
+        elif len(list_arg) == 1:
+            print("** instance id missing **")
+            return
+
+        else:
+            dict_all_obj = storage.all()
+            string = f'{list_arg[0]}.{list_arg[1]}'
+
+            if string not in dict_all_obj.keys():
+                print("** no instance found **")
+
+            elif len(list_arg) == 2:
+                print("** attribute name missing **")
+                return
+
+            elif len(list_arg) == 3:
+                print("** value missing **")
+                return
+
+            else:
+                setattr(dict_all_obj[string], list_arg[2], list_arg[3])
+                storage.save()
 
 
 if __name__ == '__main__':
