@@ -11,37 +11,63 @@ from models.base_model import BaseModel
 from datetime import datetime
 from uuid import uuid4
 
+class Test_BaseModel_Init(unittest.TestCase):
+    """test the __init__"""
 
-class Test_Init(unittest.TestCase):
-    """
-    test for BaseModel
-    """
-    def test_id(self):
-        """Test id type"""
-        base = BaseModel()
-        self.assertTrue(type(base.id) == str)
-
-    def test_id_None(self):
+    def test_id_none(self):
         """Test id is not None"""
         base = BaseModel()
         self.assertIsNot(base.id, None)
 
-    def test_id_unique(self):
-        """Test id is unique"""
+    def test_class(self):
+        """test the class name"""
         base = BaseModel()
+        self.assertEqual(base.__class__.__name__, "BaseModel")
+
+    def test_id_type(self):
+        """test id str"""
+        base = BaseModel()
+        self.assertIsInstance(base.id, str)
+
+    def test_id_unique(self):
+        """test unique id"""
+        base1 = BaseModel()
         base2 = BaseModel()
-        self.assertIsNot(base2.id, base.id)
-    
+        self.assertNotEqual(base1.id, base2.id)
+
     def test_id_length(self):
-        """Test id length"""
+        """test the lenght id"""
         base = BaseModel()
         self.assertEqual(len(base.id), 36)
 
-    def test_created_at(self):
-        """Test created_at type"""
+    def test_create_at_type(self):
+        """test created_at type"""
         base = BaseModel()
         self.assertEqual(type(base.created_at), datetime)
-    
+
+    def test_unique_created_at(self):
+        """test created_at modif"""
+        base1 = BaseModel()
+        base2 = BaseModel()
+        self.assertNotEqual(base1.created_at, base2.created_at)
+
+    def test_update_at_type(self):
+        """test updated_at type"""
+        base = BaseModel()
+        self.assertEqual(type(base.updated_at), datetime)
+
+    def test_created_at_updated(self):
+        """test updated_at modif"""
+        base1 = BaseModel()
+        base2 = BaseModel()
+        self.assertNotEqual(base1.created_at, base2.updated_at)
+
+    def test_different_updated_at(self):
+        """test if updated_at change each time executed"""
+        base1 = BaseModel()
+        base2 = BaseModel()
+        self.assertNotEqual(base1.updated_at, base2.updated_at)
+
     def test_created_at_format(self):
         """Test created at regex"""
         base = BaseModel()
@@ -73,99 +99,47 @@ class Test_Init(unittest.TestCase):
         base2 = BaseModel(**dict_a)
         self.assertTrue(hasattr(base2, '__class__'))
 
-class Test_BaseModel_Init(unittest.TestCase):
-    """test the instantiation"""
-
-    def test_name_class(self):
-        """test the class name"""
-        base = BaseModel()
-        self.assertEqual(base.__class__.__name__, "BaseModel")
-
-    def test_base_id_str(self):
-        """test id str"""
-        base = BaseModel()
-        self.assertIsInstance(base.id, str)
-
-    def test_base_id_unique(self):
-        """test unique id"""
-        base1 = BaseModel()
-        base2 = BaseModel()
-        self.assertNotEqual(base1.id, base2.id)
-
-    def test_id_length(self):
-        """test the lenght of the id"""
-        base = BaseModel()
-        self.assertEqual(len(base.id), 36)
-
-    def test_create_type_datetime(self):
-        """test if created at"""
-        base = BaseModel()
-        self.assertEqual(type(base.created_at), datetime)
-
-    def test_different_created(self):
-        """test if created_at change each time executed"""
-        base1 = BaseModel()
-        base2 = BaseModel()
-        self.assertNotEqual(base1.created_at, base2.created_at)
-
-    def test_update_type_datetime(self):
-        """test the type of updated_at"""
-        base = BaseModel()
-        self.assertEqual(type(base.updated_at), datetime)
-
-    def test_different_created_updated(self):
-        """test if updated_at change each time executed"""
-        base1 = BaseModel()
-        base2 = BaseModel()
-        self.assertNotEqual(base1.created_at, base2.updated_at)
-
-    def test_different_updated(self):
-        """test if updated_at change each time executed"""
-        base1 = BaseModel()
-        base2 = BaseModel()
-        self.assertNotEqual(base1.updated_at, base2.updated_at)
-
 
 class Test_BaseModel_Str(unittest.TestCase):
     """test the str method"""
 
     def test_representation_class_name_and_id(self):
-        """test the str representation"""
+        """test str representation"""
         base = BaseModel()
         base.id = 123
         self.assertTrue("[BaseModel] (123)", base.__str__)
 
     def test_representation_updated_at(self):
-        """test if update_at is True"""
+        """test update_at"""
         base = BaseModel()
         self.assertTrue('updated_at' in str(base), True)
 
     def test_representation_created_at(self):
-        """test if created_at is True"""
+        """test created_at"""
         base = BaseModel()
         self.assertTrue('created_at' in str(base), True)
 
 
 
-class TestBaseModelSave(unittest.TestCase):
+class Test_BaseModel_Save(unittest.TestCase):
     """test the save method"""
 
     def test_name_base_model(self):
-        """test the save method with name"""
+        """test save method with new str"""
         obj = BaseModel()
         obj.name = "Houssem"
         obj.save()
         self.assertEqual(obj.name, "Houssem")
 
     def test_my_number_base_model(self):
-        """test the save method with number"""
+        """test save method with new int"""
         obj = BaseModel()
         obj.num = 1234
         obj.save()
         self.assertEqual(obj.num, 1234)
 
     def test_save_update(self):
-        """test if changes of update are saved"""
+        """test update saved"""
         obj = BaseModel()
         obj.num = 1
         date1 = obj.updated_at
@@ -193,12 +167,12 @@ class Test_BaseModel_To_Dict(unittest.TestCase):
         self.assertEqual(type(my_dict), dict)
 
     def test_create_dictionary(self):
-        """test if the function to_dict work"""
+        """test to_dict"""
         base = BaseModel()
         self.assertEqual(type(base.__dict__), dict)
 
     def test_compare_dictionary_type(self):
-        """test if our dictionary is same as the __dict__"""
+        """test dictionary egal __dict__"""
         base = BaseModel()
         self.assertEqual(type(base.__dict__), type(base.to_dict()))
 

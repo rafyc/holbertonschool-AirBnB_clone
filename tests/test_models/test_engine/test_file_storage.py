@@ -96,33 +96,6 @@ class TestAllMethod(unittest.TestCase):
         s1.save()
         self.assertEqual(len(models.storage.all()), 7)
 
-
-class TestNewMethod(unittest.TestCase):
-    """Class that tests the new method"""
-
-    def test_new_all_classes(self):
-        """Test the new method with all types of class
-        (The new method called when we create a new instance)"""
-        dico = models.storage.all().copy()
-        for k, v in dico.items():
-            del models.storage.all()[k]
-        models.storage.save()
-        b1 = BaseModel()
-        b1.save()
-        u1 = User()
-        u1.save()
-        p1 = Place()
-        p1.save()
-        r1 = Review()
-        r1.save()
-        c1 = City()
-        c1.save()
-        a1 = Amenity()
-        a1.save()
-        s1 = State()
-        s1.save()
-        self.assertEqual(len(models.storage.all()), 7)
-
     def test_key(self):
         """Test the value of the key when the new method is called"""
         """Test with all types of class"""
