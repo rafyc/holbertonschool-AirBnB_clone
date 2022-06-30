@@ -1,8 +1,7 @@
 #!/usr/bin/python3
 """
-This module contains unit tests for the class FileStorage.
+Unit tests for the FileStorage class.
 """
-
 
 from models.engine.file_storage import FileStorage
 from models.base_model import BaseModel
@@ -12,18 +11,16 @@ from models.place import Place
 from models.review import Review
 from models.state import State
 from models.user import User
-from datetime import datetime
 import unittest
 import models
-import json
-import uuid
 import os
 
 
-class TestAttributes(unittest.TestCase):
+class TestAttr(unittest.TestCase):
     """
     This class provides tests with attributes of the class FilesStorage
     """
+
     def test_attributes_assignement(self):
         self.assertIn("_FileStorage__objects", FileStorage.__dict__)
         self.assertIsInstance(FileStorage._FileStorage__objects, dict)
@@ -31,28 +28,44 @@ class TestAttributes(unittest.TestCase):
         self.assertIsInstance(FileStorage._FileStorage__file_path, str)
 
 
-class TestAllMethod(unittest.TestCase):
+class TestNew(unittest.TestCase):
+    """Class that tests the new method within file storage"""
+
+    def test_key(self):
+        """Test with different types of class"""
+        dico = models.storage.all().copy()
+        for k, v in dico.items():
+            del models.storage.all()[k]
+        models.storage.save()
+        b1 = BaseModel()
+        b1.save()
+        dico = models.storage.all()
+        self.assertEqual(type(dico[f"BaseModel.{str(b1.id)}"]), type(b1))
+
+
+class TestMethods(unittest.TestCase):
     """
-    This class provides tests for the all method.
+    Tests for the all method of the file_storage.py.
     """
-    def test_instance_filestorage(self):
-        """Test create a FileStorage instance"""
+
+    def test_instance_is_created(self):
+        """Test type of the istance"""
         f1 = FileStorage()
         self.assertEqual(type(f1), FileStorage)
 
-    def test_type_return_value(self):
-        """Test the type of the return value"""
+    def test_type_dict(self):
+        """Test if the return value is a dict"""
         self.assertEqual(type(models.storage.all()), dict)
 
-    def tests_none_objects(self):
-        """Test all without objects"""
+    def tests_with_empty_obj(self):
+        """Empty obj"""
         dico = models.storage.all().copy()
         for k, v in dico.items():
             del models.storage.all()[k]
         models.storage.save()
         self.assertEqual(models.storage.all(), {})
 
-    def tests_one_objects(self):
+    def test_with_one_obj(self):
         """Test with one object"""
         dico = models.storage.all().copy()
         for k, v in dico.items():
@@ -62,8 +75,8 @@ class TestAllMethod(unittest.TestCase):
         b1.save()
         self.assertEqual(len(models.storage.all()), 1)
 
-    def tests_more_than_one_objects(self):
-        """Test with more than one object"""
+    def tests_multiple_obj(self):
+        """Test with mult obj"""
         dico = models.storage.all().copy()
         for k, v in dico.items():
             del models.storage.all()[k]
@@ -74,8 +87,8 @@ class TestAllMethod(unittest.TestCase):
         b3.save()
         self.assertEqual(len(models.storage.all()), 2)
 
-    def tests_all_types(self):
-        """Test with all types of class"""
+    def tests_different_types(self):
+        """Test with kind of type"""
         dico = models.storage.all().copy()
         for k, v in dico.items():
             del models.storage.all()[k]
@@ -96,24 +109,58 @@ class TestAllMethod(unittest.TestCase):
         s1.save()
         self.assertEqual(len(models.storage.all()), 7)
 
-    def test_key(self):
-        """Test the value of the key when the new method is called"""
-        """Test with all types of class"""
+
+class ReloadMethod(unittest.TestCase):
+    """Class Testing the reload method"""
+
+    def test_reload_type(self):
+        """Test the reload method"""
+        dico = models.storage.all().copy()
+        for k, v in dico.items():
+            del models.storage.all()[k]
+        models.storage.save()
+        u1 = User()
+        u1.save()
+        models.storage.reload()
+        dico = models.storage.all()
+        for k, v in dico.items():
+            self.assertEqual(type(dico[k]), type(u1))
+
+    def test_reload_in(self):
+        """Check if keys are in storage.all()."""
         dico = models.storage.all().copy()
         for k, v in dico.items():
             del models.storage.all()[k]
         models.storage.save()
         b1 = BaseModel()
+        u1 = User()
+        s1 = State()
+        p1 = Place()
+        c1 = City()
+        a1 = Amenity()
+        r1 = Review()
         b1.save()
-        dico = models.storage.all()
-        self.assertEqual(type(dico["BaseModel." + str(b1.id)]), type(b1))
+        u1.save()
+        s1.save()
+        p1.save()
+        c1.save()
+        a1.save()
+        r1.save()
+        models.storage.reload()
+        obj = models.storage.all()
+        self.assertIn(f"BaseModel.{b1.id}", obj)
+        self.assertIn(f"User.{u1.id}", obj)
+        self.assertIn(f"State.{s1.id}", obj)
+        self.assertIn(f"Place.{p1.id}", obj)
+        self.assertIn(f"City.{c1.id}", obj)
+        self.assertIn(f"Amenity.{a1.id}", obj)
 
 
-class TestSaveMethod(unittest.TestCase):
-    """Class that tests the save method"""
+class TestSave(unittest.TestCase):
+    """Tests the save method"""
 
-    def test_jsonfile_creation(self):
-        """Test if the json file has been created"""
+    def test_jsonfile_create(self):
+        """Check if Json file has been created"""
         dico = models.storage.all().copy()
         for k, v in dico.items():
             del models.storage.all()[k]
@@ -125,7 +172,7 @@ class TestSaveMethod(unittest.TestCase):
         self.assertEqual(os.path.exists("file.json"), True)
 
     def test_if_jsonfile_is_filled(self):
-        """Test if the save method fills the json file"""
+        """Test if save methos write in Json file"""
         dico = models.storage.all().copy()
         for k, v in dico.items():
             del models.storage.all()[k]
@@ -136,7 +183,7 @@ class TestSaveMethod(unittest.TestCase):
         self.assertGreater(os.path.getsize("file.json"), 2)
 
     def test_save_after_del(self):
-        """Test if the save method fills the json file"""
+        """Test if save methos write in Json file"""
         dico = models.storage.all().copy()
         for k, v in dico.items():
             del models.storage.all()[k]
@@ -152,8 +199,8 @@ class TestSaveMethod(unittest.TestCase):
         models.storage.save()
         self.assertEqual(os.path.getsize("file.json"), 2)
 
-    def test_save_in(self):
-        """Test if the keys are in the json file."""
+    def test_save_into_json(self):
+        """Check if the keys are inside the Json file."""
         dico = models.storage.all().copy()
         for k, v in dico.items():
             del models.storage.all()[k]
@@ -175,60 +222,13 @@ class TestSaveMethod(unittest.TestCase):
         text = ""
         with open("file.json", "r", encoding="utf-8") as f:
             text = f.read()
-            self.assertIn("BaseModel." + b1.id, text)
-            self.assertIn("User." + u1.id, text)
-            self.assertIn("State." + s1.id, text)
-            self.assertIn("Place." + p1.id, text)
-            self.assertIn("City." + c1.id, text)
-            self.assertIn("Amenity." + a1.id, text)
-            self.assertIn("Review." + r1.id, text)
-
-
-class TestReloadMethod(unittest.TestCase):
-    """Class that tests the reload method"""
-
-    def test_reload_type(self):
-        """Test the reload method"""
-        dico = models.storage.all().copy()
-        for k, v in dico.items():
-            del models.storage.all()[k]
-        models.storage.save()
-        u1 = User()
-        u1.save()
-        models.storage.reload()
-        dico = models.storage.all()
-        for k, v in dico.items():
-            self.assertEqual(type(dico[k]), type(u1))
-
-    def test_reload_in(self):
-        """test if the keys are in storage.all()."""
-        dico = models.storage.all().copy()
-        for k, v in dico.items():
-            del models.storage.all()[k]
-        models.storage.save()
-        b1 = BaseModel()
-        u1 = User()
-        s1 = State()
-        p1 = Place()
-        c1 = City()
-        a1 = Amenity()
-        r1 = Review()
-        b1.save()
-        u1.save()
-        s1.save()
-        p1.save()
-        c1.save()
-        a1.save()
-        r1.save()
-        models.storage.reload()
-        obj = models.storage.all()
-        self.assertIn("BaseModel." + b1.id, obj)
-        self.assertIn("User." + u1.id, obj)
-        self.assertIn("State." + s1.id, obj)
-        self.assertIn("Place." + p1.id, obj)
-        self.assertIn("City." + c1.id, obj)
-        self.assertIn("Amenity." + a1.id, obj)
-        self.assertIn("Review." + r1.id, obj)
+            self.assertIn(f"BaseModel.{b1.id}", text)
+            self.assertIn(f"User.{u1.id}", text)
+            self.assertIn(f"State.{s1.id}", text)
+            self.assertIn(f"Place.{p1.id}", text)
+            self.assertIn(f"City.{c1.id}", text)
+            self.assertIn(f"Amenity.{a1.id}", text)
+            self.assertIn(f"Review.{r1.id}", text)
 
 
 if __name__ == '__main__':
