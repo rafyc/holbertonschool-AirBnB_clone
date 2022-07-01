@@ -4,11 +4,7 @@
 
 ## Introduction
 
-In this project, there are 2 parts: 
-* Step 1: create the console
-* Step 2: realise a web static
-
-## Step 1: Create the console
+## Create the console
 
  * This first step is in python. We will start by implement the parent class called BaseModel.
  * This class do the initialization, serialization and deserialization of the future instances : Instance <-> Dictionary <-> JSON string <-> file
@@ -182,7 +178,7 @@ $ method default switch by
 (hbnb) count User
 ```
 
-### [Python Unit Tests](https://github.com/elodieriou/AirBnB_clone/tree/main/tests/test_models)
+### [Python Unit Tests](https://github.com/rafyc/holbertonschool-AirBnB_clone/tree/main/tests/test_models)
 
 We have done some tests for our classes and methods. Tests are made to make sure our code display the result and the outputs expected.
 
@@ -194,55 +190,3 @@ And the command in non-interactive mode is :
 ```
 echo "python3 -m unittest discover tests" | bash
 ```
-
-## Step 2: Web static
-
-It's time to make our AirBnB alive. We will build the front end step-by-step: 
-
-* Create simple HTML static pages 
-* Style guide 
-* Fake contents 
-* No Javascript 
-* No data loaded from anything
-
-During this second part, we will learn to manipulate HTML and CSS languages. 
-
-![second step](/img/hbnb_step2.png "Second step")
-
-### Main files
-
-To see the entire project, go to these files:
-* [103-index.html](https://github.com/elodieriou/AirBnB_clone/blob/main/web_static/103-index.html)
-```commandline
-This file contain the html code with accessibility support.
-```
-* [103-common.css](https://github.com/elodieriou/AirBnB_clone/blob/main/web_static/styles/103-common.css)
-```commandline
-This file contains the stylesheet for the body and container.
-```
-* [103-filters.css](https://github.com/elodieriou/AirBnB_clone/blob/main/web_static/styles/103-filters.css)
-```commandline
-This file contains the stylesheet for the filters and the button search with a part of responsive design.
-```
-* [103-footer.css](https://github.com/elodieriou/AirBnB_clone/blob/main/web_static/styles/103-footer.css)
-```commandline
-This file contains the stylesheet for the footer.
-```
-* [103-header.css](https://github.com/elodieriou/AirBnB_clone/blob/main/web_static/styles/103-footer.css)
-```commandline
-This file contains the stylesheet for the header.
-```
-* [103-places.css](https://github.com/elodieriou/AirBnB_clone/blob/main/web_static/styles/103-places.css)
-```commandline
-This file contains the stylesheet for the Places article.
-```
-![screenshot](/img/airbnb_clone-web_static.png "web static")
-
-### Specifications
-
-```commandline
-CSS flexbox layout
-Responsive design
-Accessibility support
-```
- 
