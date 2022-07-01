@@ -3,8 +3,10 @@
 The entry point of the command interpreter.
 """
 
+from optparse import Values
 from models import storage
 import cmd
+import models
 from models.base_model import BaseModel
 from models.engine.file_storage import FileStorage
 from models.amenity import Amenity
@@ -167,6 +169,23 @@ class HBNBCommand(cmd.Cmd):
             else:
                 setattr(dict_all_obj[string], list_arg[2], list_arg[3])
                 storage.save()
+
+    def do_count(self, arg):
+        """Function that retrieve the number of instances of a class:
+        Usage : <class name>.count().
+        """
+        list_arg = arg.split(" ")
+        if arg == "":
+            print("**class name is missing**")
+        elif arg not in HBNBCommand.list_class:
+            print("**class does not exist**")
+        else:
+            my_dict = models.FileStorage.all(self)
+            count_list = []
+            for val in my_dict:
+                if val in my_dict:
+                    count_list.append(val)
+        print(len(count_list))
 
 
 if __name__ == '__main__':
