@@ -3,7 +3,6 @@
 The entry point of the command interpreter.
 """
 
-from optparse import Values
 from models import storage
 import cmd
 import models
