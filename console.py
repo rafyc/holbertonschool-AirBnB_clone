@@ -91,7 +91,7 @@ class HBNBCommand(cmd.Cmd):
         list_arg = arg.split(" ")
 
         if len(arg) == 0:
-            print("** class name missing ** ")
+            print("** class name missing **")
             return
 
         elif list_arg[0] not in HBNBCommand.list_class:
@@ -175,9 +175,9 @@ class HBNBCommand(cmd.Cmd):
         """
         list_arg = arg.split(" ")
         if arg == "":
-            print("**class name is missing**")
+            print("** class name is missing **")
         elif arg not in HBNBCommand.list_class:
-            print("**class does not exist**")
+            print("** class does not exist **")
         else:
             my_dict = models.FileStorage.all(self)
             count_list = []
