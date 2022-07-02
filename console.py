@@ -27,6 +27,19 @@ class HBNBCommand(cmd.Cmd):
     list_class = ["BaseModel", "User", "City",
                   "Amenity", "Place", "State", "Review"]
 
+    list_function = ['create', 'show', 'update', 'all', 'destroy', 'count']
+
+    def precmd(self, arg):
+        """parses command input"""
+        if '.' in arg and '(' in arg and ')' in arg:
+            my_class = arg.split('.')
+            my_func = my_class[1].split('(')
+            param = my_func[1].split(')')
+            if my_class[0] in HBNBCommand.list_class and \
+               my_func[0] in HBNBCommand.list_function:
+                arg = my_func[0] + ' ' + my_class[0] + ' ' + param[0]
+        return arg
+
     def do_quit(self, arg):
         """Quit command to exit the program
         """
@@ -170,21 +183,14 @@ class HBNBCommand(cmd.Cmd):
                 storage.save()
 
     def do_count(self, arg):
-        """Function that retrieve the number of instances of a class:
-        Usage : <class name>.count().
-        """
+        """Count the number of instances of a class"""
+        count = 0
         list_arg = arg.split(" ")
-        if arg == "":
-            print("** class name is missing **")
-        elif arg not in HBNBCommand.list_class:
-            print("** class does not exist **")
-        else:
-            my_dict = models.FileStorage.all(self)
-            count_list = []
-            for val in my_dict:
-                if val in my_dict:
-                    count_list.append(val)
-        print(len(count_list))
+        dict_all_obj = storage.all()
+        for v in dict_all_obj.values():
+            if v.__class__.__name__ == list_arg[0]:
+                count += 1
+        print(count)
 
 
 if __name__ == '__main__':
