@@ -1,0 +1,33 @@
+body {
+  margin: 0px;
+  padding: 0px;
+  color: #484848;
+  font-size: 14px;
+  font-family: Circular, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+content {
+  flex-grow: 1;
+}
+.container {
+  max-width: 1000px;
+  margin: 30px auto;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+p{
+	margin: 0;
+}
+
+ul{
+	list-style-type: none;
+
+}
+
+.responsive-menu ul {
+	padding: 0;
+}
